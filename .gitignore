@@ -1,7 +1,3 @@
-.node_modules
-.downlaods
-.src/downloads
-.src/musicas
 # Logs
 logs
 *.log
@@ -44,6 +40,9 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+downlaods/
+src/downloads/
+src/musicas/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
