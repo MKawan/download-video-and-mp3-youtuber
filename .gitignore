@@ -1,3 +1,7 @@
+.node_modules
+.downlaods
+.src/downloads
+.src/musicas
 # Logs
 logs
 *.log
