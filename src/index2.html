@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        function Downloader() {
+            const [url, setUrl] = useState('');
+            const [resolution, setResolution] = useState('best');
+            const [isPlaylist, setIsPlaylist] = useState(false);
+            const [status, setStatus] = useState('');
+
+            const handleDownload = async (e) => {
+                e.preventDefault();
+                setStatus('Iniciando download...');
+
+                // Placeholder for backend API call
+                try {
+                    const response = await fetch('http://localhost:3000/download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url, resolution, isPlaylist })
+                    });
+                    const result = await response.json();
+                    setStatus(result.message || 'Download iniciado! Verifique o servidor.');
+                } catch (error) {
+                    setStatus(`Erro: ${error.message}`);
+                }
+            };
+
+            return (
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <h1 className="text-2xl font-bold mb-4 text-center">YouTube Downloader</h1>
+                    <form onSubmit={handleDownload} className="space-y-4">
+                        <div>
+                            <label htmlFor="url" className="block text-sm font-medium text-gray-700">
+                                URL do Vídeo ou Playlist
+                            </label>
+                            <input
+                                id="url"
+                                type="text"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                                placeholder="https://www.youtube.com/..."
+                                className="mt-1 block w-full p-2 border rounded-md"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="resolution" className="block text-sm font-medium text-gray-700">
+                                Resolução
+                            </label>
+                            <select
+                                id="resolution"
+                                value={resolution}
+                                onChange={(e) => setResolution(e.target.value)}
+                                className="mt-1 block w-full p-2 border rounded-md"
+                            >
+                                <option value="best">Melhor Disponível</option>
+                                <option value="1080p">1080p</option>
+                                <option value="720p">720p</option>
+                                <option value="480p">480p</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                                Tipo
+                            </label>
+                            <div className="mt-1 flex items-center space-x-4">
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        value="video"
+                                        checked={!isPlaylist}
+                                        onChange={() => setIsPlaylist(false)}
+                                        className="mr-2"
+                                    />
+                                    Vídeo
+                                </label>
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        value="playlist"
+                                        checked={isPlaylist}
+                                        onChange={() => setIsPlaylist(true)}
+                                        className="mr-2"
+                                    />
+                                    Playlist
+                                </label>
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                        >
+                            Baixar
+                        </button>
+                    </form>
+                    <p className="mt-4 text-sm text-gray-600">{status}</p>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<Downloader />, document.getElementById('root'));
+    </script>
+</body>
+</html>
